@@ -10,7 +10,7 @@ export const getTypeormConfig = async (
   username: configService.get<string>('DB_USERNAME'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_DATABASE'),
-  entities: [],
+  entities: [__dirname + '/../**/*.entity.{ts,js}'],
   synchronize: true, // 개발 중에만 true
   logging: false,
 });

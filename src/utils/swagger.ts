@@ -6,6 +6,17 @@ export function setUpSwagger(app: INestApplication): void {
     .setTitle('Restaurant Reservation Api')
     .setDescription('식당 예약 시스템 api 문서')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'access-token', // 이 이름은 @ApiBearerAuth('access-token') 와 연결됨
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
