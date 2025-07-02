@@ -51,6 +51,9 @@ $ pnpm run start:prod
 # unit tests
 $ pnpm run test
 
+# generate dummy data cli
+$ pnpm run seed
+
 # e2e tests
 $ pnpm run test:e2e
 
