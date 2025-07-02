@@ -1,4 +1,4 @@
-import { UserType } from '../../auth/user-type.enum';
+import { UserType } from '../../auth/enums/user-type.enum';
 
 export interface UserPayload {
   id: number;

@@ -1,18 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Restaurant } from './restaurant.entity';
-import { MenuCategory } from '../menu/menu-category.enum';
+import { MenuCategory } from '../menu/enums/menu-category.enum';
+import { AbstractEntity } from './abstract.entity';
 
 @Entity('menus')
-export class Menu {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Menu extends AbstractEntity {
   @Column({ comment: '메뉴 이름' })
   name: string;
 

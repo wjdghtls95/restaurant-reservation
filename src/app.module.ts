@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getTypeormConfig } from './utils/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MenuModule } from './menu/menu.module';
     // Domain Module
     AuthModule,
     MenuModule,
+    ReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

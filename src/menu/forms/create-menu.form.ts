@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsString } from 'class-validator';
-import { MenuCategory } from './menu-category.enum';
+import { MenuCategory } from '../enums/menu-category.enum';
 
 export class CreateMenuForm {
   @ApiProperty({

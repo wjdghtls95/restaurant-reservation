@@ -7,15 +7,17 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Auth } from '../utils/decorator/auth.decorator';
 import { MenuService } from './menu.service';
-import { CreateMenuForm } from './create-menu.form';
+import { CreateMenuForm } from './forms/create-menu.form';
 import { CurrentUser } from '../utils/decorator/current-user.decorator';
 import { UserPayload } from '../utils/interface/user-payload.interface';
-import { MenuDto } from './menu.dto';
-import { UserType } from '../auth/user-type.enum';
-import { GetMenusForm } from './get-menus.form';
+import { MenuDto } from './dtos/menu.dto';
+import { UserType } from '../auth/enums/user-type.enum';
+import { GetMenusForm } from './forms/get-menus.form';
+import { ApiResponseEntity } from '../utils/response/api-response-entity.decorator';
+import { ResponseEntity } from '../utils/response/response-entity';
 
 @Auth(UserType.RESTAURANT)
 @ApiTags('Menus')
@@ -24,31 +26,33 @@ export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   @Post()
-  @ApiOperation({ summary: '식당 - 메뉴 추가' })
+  @ApiResponseEntity({ summary: '식당 - 메뉴 추가', type: MenuDto })
   async createMenu(
     @CurrentUser() user: UserPayload,
     @Body() createMenuForm: CreateMenuForm,
-  ): Promise<MenuDto> {
+  ): Promise<ResponseEntity<MenuDto>> {
     const menuDto = await this.menuService.createMenu(user.id, createMenuForm);
 
-    return menuDto;
+    return ResponseEntity.ok(menuDto);
   }
 
   @Get()
-  @ApiOperation({
-    summary: '식당 - 메뉴 조회 (이름(일부) 검색, 최대 최소 가격 검색)',
+  @ApiResponseEntity({
+    summary:
+      '식당 - 메뉴 전체 조회 or 이름(일부), 최대 가격, 최소 가격 선택적 검색',
+    type: MenuDto,
   })
   async getMenus(
     @CurrentUser() user: UserPayload,
     @Query() getMenusForm: GetMenusForm,
-  ): Promise<MenuDto[]> {
-    const menuDto = await this.menuService.getMenus(user.id, getMenusForm);
+  ): Promise<ResponseEntity<MenuDto[]>> {
+    const menuDtos = await this.menuService.getMenus(user.id, getMenusForm);
 
-    return menuDto;
+    return ResponseEntity.ok(menuDtos);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: '식당 - 메뉴 삭제' })
+  @ApiResponseEntity({ summary: '식당 - 메뉴 삭제' })
   async deleteMenu(
     @CurrentUser() user: UserPayload,
     @Param('id') id: string,

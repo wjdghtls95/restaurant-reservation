@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { RestaurantModule } from '../restaurant/restaurant.module';
 import { JwtStrategy } from '../utils/security/jwt.stratgy';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Restaurant } from '../entity/restaurant.entity';
+import { Customer } from '../entity/customer.entity';
 
 @Module({
   imports: [
@@ -21,7 +23,8 @@ import { ConfigService } from '@nestjs/config';
       }),
     }),
 
-    RestaurantModule,
+    // for login
+    TypeOrmModule.forFeature([Restaurant, Customer]),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

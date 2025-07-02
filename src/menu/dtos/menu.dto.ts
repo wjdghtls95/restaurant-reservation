@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseOutDto } from '../utils/dto/base-out.dto';
-import { MenuCategory } from './menu-category.enum';
+import { BaseOutDto } from '../../utils/dto/base-out.dto';
+import { MenuCategory } from '../enums/menu-category.enum';
 
 export class MenuDto extends BaseOutDto {
   @ApiProperty({ description: '메뉴 ID' })
