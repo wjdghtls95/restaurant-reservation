@@ -266,7 +266,7 @@ export class ReservationService {
     qb: SelectQueryBuilder<Reservation>,
     getReservationForm: GetReservationForm,
   ) {
-    const { phone, date, minPeople, menuId } = getReservationForm;
+    const { phone, date, minPeople, menuIds } = getReservationForm;
 
     if (phone) {
       qb.andWhere('reservation.phoneNumber LIKE :phone', {
@@ -277,7 +277,7 @@ export class ReservationService {
     if (date) {
       qb.andWhere(
         'DATE(reservation.createdAt)=:createdDate',
-        { createdDate: date }, // ex: 'YYYY-MM-DD'
+        { createdDate: date }, // ex) 'YYYY-MM-DD'
       );
     }
 
@@ -287,9 +287,9 @@ export class ReservationService {
       });
     }
 
-    if (menuId) {
+    if (menuIds) {
       qb.andWhere('JSON_CONTAINS(reservation.menuIds, :menuIds, "$")', {
-        menuIds: JSON.stringify(menuId),
+        menuIds: JSON.stringify(menuIds),
       });
     }
   }

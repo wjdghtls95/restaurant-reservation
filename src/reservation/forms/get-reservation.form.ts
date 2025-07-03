@@ -19,8 +19,10 @@ export class GetReservationForm {
   @Transform(({ value }) => (value ? Number(value) : undefined))
   minPeople?: number;
 
-  @ApiPropertyOptional({ description: '포함된 메뉴 ID' })
+  @ApiPropertyOptional({ description: '포함된 메뉴 ID 목록' })
   @IsOptional()
-  @Transform(({ value }) => (value ? Number(value) : undefined))
-  menuId?: number;
+  @Transform(({ value }) =>
+    Array.isArray(value) ? value.map(Number) : [Number(value)],
+  )
+  menuIds?: number[];
 }
