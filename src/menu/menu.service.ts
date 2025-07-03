@@ -26,7 +26,13 @@ export class MenuService {
 
     await this.menuRepository.save(newMenu);
 
-    return MenuDto.of(newMenu);
+    return MenuDto.of({
+      id: newMenu.id,
+      name: newMenu.name,
+      description: newMenu.description,
+      price: newMenu.price,
+      category: newMenu.category,
+    });
   }
 
   /**
@@ -48,17 +54,17 @@ export class MenuService {
       qb.andWhere('menus.name LIKE :name', { name: `%${name}%` });
     }
 
-    if (minPrice !== undefined) {
+    if (minPrice) {
       qb.andWhere('menus.price>=:minPrice', { minPrice: minPrice });
     }
 
-    if (maxPrice !== undefined) {
+    if (maxPrice) {
       qb.andWhere('menus.price<=:maxPrice', { maxPrice: maxPrice });
     }
 
     const menus = await qb.getMany();
 
-    return menus.map(MenuDto.of);
+    return MenuDto.fromEntities(menus);
   }
 
   /**

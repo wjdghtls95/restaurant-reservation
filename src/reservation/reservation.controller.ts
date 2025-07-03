@@ -28,12 +28,12 @@ import { UpdateReservationForm } from './forms/update-reservation.form';
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
+  @Auth(UserType.CUSTOMER)
   @Post()
   @ApiResponseEntity({
-    summary: '예약 생성 - 고객',
+    summary: '고객 - 예약 생성',
     type: CreateReservationDto,
   })
-  @Auth(UserType.CUSTOMER)
   async createReservation(
     @CurrentUser() user: UserPayload,
     @Body() createReservationForm: CreateReservationForm,
@@ -90,7 +90,7 @@ export class ReservationController {
   @Auth(UserType.CUSTOMER)
   @Patch(':id')
   @ApiResponseEntity({
-    summary: '예약 수정 - 고객',
+    summary: '고객 - 예약 수정',
     type: UpdateReservationDto,
   })
   async updateReservation(
@@ -111,7 +111,7 @@ export class ReservationController {
   @Auth(UserType.CUSTOMER)
   @Delete(':id')
   @ApiResponseEntity({
-    summary: '예약 삭제 - 고객',
+    summary: '고객 - 예약 삭제',
     type: Boolean,
   })
   async deleteReservation(
@@ -119,6 +119,7 @@ export class ReservationController {
     @CurrentUser() user: UserPayload,
   ): Promise<ResponseEntity<boolean>> {
     await this.reservationService.deleteReservation(reservationId, user.id);
+
     return ResponseEntity.ok(true);
   }
 }

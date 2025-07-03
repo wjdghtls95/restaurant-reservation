@@ -126,7 +126,7 @@ export class ReservationService {
       .createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.restaurant', 'restaurant')
       .leftJoinAndSelect('reservation.customer', 'customer')
-      .where('reservation.customerId=:customerId', { customerId });
+      .where('customerId=:customerId', { customerId });
 
     // 조건이 있을때 필터
     if (getReservationForm) {
@@ -148,7 +148,7 @@ export class ReservationService {
       .createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.restaurant', 'restaurant')
       .leftJoinAndSelect('reservation.customer', 'customer')
-      .where('reservation.restaurantId=:restaurantId', { restaurantId });
+      .where('restaurantId=:restaurantId', { restaurantId });
 
     // 조건이 있을때 필터
     if (getReservationForm) {
@@ -186,11 +186,25 @@ export class ReservationService {
 
     // 메뉴 수정
     if (menuIds) {
-      menus = await this.menuRepository.find({ where: { id: In(menuIds) } });
+      menus = await this.menuRepository.find({
+        where: { id: In(menuIds) },
+        relations: ['restaurant'],
+      });
 
+      // 실제 존재하는 메뉴인지 체크
       if (menus.length !== menuIds.length) {
         throw new BadRequestException('INVALID_MENU_SELECTION');
       }
+
+      // 그 식당에 메뉴가 존재하는지 체크
+      const invalidMenu = menus.find(
+        (manu) => manu.restaurant.id !== reservation.restaurant.id,
+      );
+
+      if (invalidMenu) {
+        throw new BadRequestException('INVALID_MENU_FOR_RESTAURANT');
+      }
+
       reservation.menuIds = menuIds;
     }
 
@@ -209,7 +223,15 @@ export class ReservationService {
       endTime: updatedReservation.endTime,
       phoneNumber: updatedReservation.phoneNumber,
       peopleCount: updatedReservation.peopleCount,
-      menus: MenuDto.fromEntities(menus.length ? menus : []),
+      menus: menus.map((menu) =>
+        MenuDto.of({
+          id: menu.id,
+          name: menu.name,
+          description: menu.description,
+          price: menu.price,
+          category: menu.category,
+        }),
+      ),
     });
   }
 

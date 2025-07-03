@@ -19,12 +19,12 @@ import { GetMenusForm } from './forms/get-menus.form';
 import { ApiResponseEntity } from '../utils/response/api-response-entity.decorator';
 import { ResponseEntity } from '../utils/response/response-entity';
 
-@Auth(UserType.RESTAURANT)
 @ApiTags('Menus')
 @Controller('menus')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
+  @Auth(UserType.RESTAURANT)
   @Post()
   @ApiResponseEntity({ summary: '식당 - 메뉴 추가', type: MenuDto })
   async createMenu(
@@ -36,6 +36,7 @@ export class MenuController {
     return ResponseEntity.ok(menuDto);
   }
 
+  @Auth(UserType.RESTAURANT)
   @Get()
   @ApiResponseEntity({
     summary:
@@ -51,12 +52,15 @@ export class MenuController {
     return ResponseEntity.ok(menuDtos);
   }
 
+  @Auth(UserType.RESTAURANT)
   @Delete(':id')
-  @ApiResponseEntity({ summary: '식당 - 메뉴 삭제' })
+  @ApiResponseEntity({ summary: '식당 - 메뉴 삭제', type: Boolean })
   async deleteMenu(
     @CurrentUser() user: UserPayload,
     @Param('id') id: string,
-  ): Promise<void> {
-    return this.menuService.deleteMenu(user.id, Number(id));
+  ): Promise<ResponseEntity<boolean>> {
+    await this.menuService.deleteMenu(user.id, Number(id));
+
+    return ResponseEntity.ok(true);
   }
 }
