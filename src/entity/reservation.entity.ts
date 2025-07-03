@@ -23,6 +23,6 @@ export class Reservation extends AbstractEntity {
   @Column({ comment: '예약 인원 수' })
   peopleCount: number;
 
-  @Column('simple-array', { nullable: true })
+  @Column('json', { nullable: true, comment: '주문 메뉴 아이디들' })
   menuIds: number[];
 }

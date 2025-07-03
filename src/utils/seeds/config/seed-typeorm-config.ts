@@ -8,7 +8,7 @@ import { Menu } from '../../../entity/menu.entity';
 dotenv.config();
 
 // for debugging
-console.log('DB_HOST:', process.env.DB_HOST);
+// console.log('DB_HOST:', process.env.DB_HOST);
 
 export const seedTypeOrmConfig: DataSourceOptions = {
   type: 'mysql',

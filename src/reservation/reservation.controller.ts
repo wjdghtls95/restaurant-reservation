@@ -20,8 +20,8 @@ import { UserPayload } from '../utils/interface/user-payload.interface';
 import { CreateReservationForm } from './forms/create-reservation.form';
 import { GetReservationDto } from './dtos/get-reservation.dto';
 import { GetReservationForm } from './forms/get-reservation.form';
-import { UpdateReservationDto } from './forms/update-reservation.dto';
-import { UpdateReservationForm } from './dtos/update-reservation.form';
+import { UpdateReservationDto } from './dtos/update-reservation.dto';
+import { UpdateReservationForm } from './forms/update-reservation.form';
 
 @ApiTags('Reservations')
 @Controller('reservations')

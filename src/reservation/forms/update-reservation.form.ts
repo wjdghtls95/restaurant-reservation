@@ -1,4 +1,4 @@
-import { IsArray, IsInt, Min } from 'class-validator';
+import { IsArray, IsInt, IsNumber, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateReservationForm {
@@ -9,5 +9,6 @@ export class UpdateReservationForm {
 
   @ApiPropertyOptional({ description: '예약한 메뉴들' })
   @IsArray()
+  @IsNumber({}, { each: true })
   menuIds?: number[];
 }

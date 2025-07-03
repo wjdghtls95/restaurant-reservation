@@ -21,8 +21,8 @@ import { CreateReservationDto } from './dtos/create-reservation.dto';
 import { MenuDto } from '../menu/dtos/menu.dto';
 import { GetReservationDto } from './dtos/get-reservation.dto';
 import { GetReservationForm } from './forms/get-reservation.form';
-import { UpdateReservationForm } from './dtos/update-reservation.form';
-import { UpdateReservationDto } from './forms/update-reservation.dto';
+import { UpdateReservationForm } from './forms/update-reservation.form';
+import { UpdateReservationDto } from './dtos/update-reservation.dto';
 
 @Injectable()
 export class ReservationService {
@@ -120,7 +120,7 @@ export class ReservationService {
    */
   async getReservationsByCustomer(
     customerId: number,
-    filter?: GetReservationForm,
+    getReservationForm?: GetReservationForm,
   ): Promise<GetReservationDto[]> {
     const qb = this.reservationRepository
       .createQueryBuilder('reservation')
@@ -129,8 +129,8 @@ export class ReservationService {
       .where('reservation.customerId=:customerId', { customerId });
 
     // 조건이 있을때 필터
-    if (filter) {
-      await this._applyFilterConditions(qb, filter);
+    if (getReservationForm) {
+      await this._applyFilterConditions(qb, getReservationForm);
     }
 
     const reservations = await qb.getMany();
@@ -142,7 +142,7 @@ export class ReservationService {
    */
   async getReservationsByRestaurant(
     restaurantId: number,
-    filter?: GetReservationForm,
+    getReservationForm?: GetReservationForm,
   ): Promise<GetReservationDto[]> {
     const qb = this.reservationRepository
       .createQueryBuilder('reservation')
@@ -151,8 +151,8 @@ export class ReservationService {
       .where('reservation.restaurantId=:restaurantId', { restaurantId });
 
     // 조건이 있을때 필터
-    if (filter) {
-      await this._applyFilterConditions(qb, filter);
+    if (getReservationForm) {
+      await this._applyFilterConditions(qb, getReservationForm);
     }
 
     const reservations = await qb.getMany();
@@ -264,30 +264,32 @@ export class ReservationService {
    */
   private async _applyFilterConditions(
     qb: SelectQueryBuilder<Reservation>,
-    filter: GetReservationForm,
+    getReservationForm: GetReservationForm,
   ) {
-    if (filter.phone) {
+    const { phone, date, minPeople, menuId } = getReservationForm;
+
+    if (phone) {
       qb.andWhere('reservation.phoneNumber LIKE :phone', {
-        phone: `%${filter.phone}%`,
+        phone: `%${phone}%`,
       });
     }
 
-    if (filter.date) {
+    if (date) {
       qb.andWhere(
         'DATE(reservation.createdAt)=:createdDate',
-        { createdDate: filter.date }, // ex: 'YYYY-MM-DD'
+        { createdDate: date }, // ex: 'YYYY-MM-DD'
       );
     }
 
-    if (filter.minPeople) {
+    if (minPeople) {
       qb.andWhere('reservation.peopleCount>=:minPeople', {
-        minPeople: filter.minPeople,
+        minPeople: minPeople,
       });
     }
 
-    if (filter.menuId) {
-      qb.andWhere('FIND_IN_SET(:menuId, reservation.menuIds)', {
-        menuId: String(filter.menuId),
+    if (menuId) {
+      qb.andWhere('JSON_CONTAINS(reservation.menuIds, :menuIds, "$")', {
+        menuIds: JSON.stringify(menuId),
       });
     }
   }
